@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
+import { COLORS, SHADOWS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../constants/colors';
 
 export default function LocationScreen() {
   const navigation = useNavigation();
@@ -17,13 +20,34 @@ export default function LocationScreen() {
   const [searchText, setSearchText] = useState('');
   const [showSearch, setShowSearch] = useState(false);
 
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const buttonScale1 = useRef(new Animated.Value(1)).current;
+  const buttonScale2 = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    // Animation de pulsation continue pour le bouton GPS
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   const handleUseMyLocation = async () => {
     setLoading(true);
-    
+
     try {
-      // Demander la permission de localisation
       let { status } = await Location.requestForegroundPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Alert.alert(
           'Permission refusée',
@@ -33,13 +57,10 @@ export default function LocationScreen() {
         return;
       }
 
-      // Obtenir la position actuelle
       let location = await Location.getCurrentPositionAsync({});
-      
-      // Simulation d'un délai pour l'UX
+
       setTimeout(() => {
         setLoading(false);
-        // Ici, on pourrait sauvegarder la localisation et naviguer vers l'écran principal
         Alert.alert(
           'Localisation enregistrée',
           `Position: ${location.coords.latitude}, ${location.coords.longitude}`,
@@ -65,7 +86,6 @@ export default function LocationScreen() {
 
   const handleSearchSubmit = () => {
     if (searchText.trim()) {
-      // Ici, on pourrait faire une recherche de ville et naviguer
       Alert.alert(
         'Ville sélectionnée',
         `Recherche pour: ${searchText}`,
@@ -81,25 +101,59 @@ export default function LocationScreen() {
     }
   };
 
+  const animateButton = (anim, toValue) => {
+    Animated.spring(anim, {
+      toValue,
+      friction: 3,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={COLORS.gradients.success}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
       <View style={styles.content}>
-        <Text style={styles.title}>📍 D'où pars-tu ?</Text>
+        <Text style={styles.emoji}>📍</Text>
+        <Text style={styles.title}>D'où pars-tu ?</Text>
 
         {!showSearch ? (
           <>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleUseMyLocation}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text style={styles.buttonText}>Utiliser ma position</Text>
-              )}
-              <Text style={styles.buttonSubtext}>(GPS automatique)</Text>
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ scale: buttonScale1 }], width: '100%' }}>
+              <TouchableOpacity
+                style={styles.buttonWrapper}
+                onPress={handleUseMyLocation}
+                onPressIn={() => animateButton(buttonScale1, 0.95)}
+                onPressOut={() => animateButton(buttonScale1, 1)}
+                disabled={loading}
+                activeOpacity={0.9}
+              >
+                <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.15)']}
+                    style={styles.button}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    {loading ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <>
+                        <Text style={styles.buttonIcon}>🎯</Text>
+                        <View style={styles.buttonTextContainer}>
+                          <Text style={styles.buttonText}>Utiliser ma position</Text>
+                          <Text style={styles.buttonSubtext}>(GPS automatique)</Text>
+                        </View>
+                      </>
+                    )}
+                  </LinearGradient>
+                </Animated.View>
+              </TouchableOpacity>
+            </Animated.View>
 
             <View style={styles.separator}>
               <View style={styles.separatorLine} />
@@ -107,30 +161,61 @@ export default function LocationScreen() {
               <View style={styles.separatorLine} />
             </View>
 
-            <TouchableOpacity
-              style={[styles.button, styles.buttonSecondary]}
-              onPress={handleSearchCity}
-            >
-              <Text style={styles.buttonTextSecondary}>Chercher une ville</Text>
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ scale: buttonScale2 }], width: '100%' }}>
+              <TouchableOpacity
+                style={styles.buttonWrapper}
+                onPress={handleSearchCity}
+                onPressIn={() => animateButton(buttonScale2, 0.95)}
+                onPressOut={() => animateButton(buttonScale2, 1)}
+                activeOpacity={0.9}
+              >
+                <LinearGradient
+                  colors={['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']}
+                  style={[styles.button, styles.buttonSecondary]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Text style={styles.buttonIcon}>🔍</Text>
+                  <Text style={styles.buttonTextSecondary}>Chercher une ville</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
           </>
         ) : (
           <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Reims 🔍"
-              placeholderTextColor="#999999"
-              value={searchText}
-              onChangeText={setSearchText}
-              onSubmitEditing={handleSearchSubmit}
-              autoFocus
-            />
+            <View style={styles.searchInputWrapper}>
+              <LinearGradient
+                colors={['rgba(255, 255, 255, 0.25)', 'rgba(255, 255, 255, 0.15)']}
+                style={styles.searchInputGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Reims 🔍"
+                  placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                  value={searchText}
+                  onChangeText={setSearchText}
+                  onSubmitEditing={handleSearchSubmit}
+                  autoFocus
+                />
+              </LinearGradient>
+            </View>
+
             <TouchableOpacity
-              style={styles.searchButton}
+              style={styles.searchButtonWrapper}
               onPress={handleSearchSubmit}
             >
-              <Text style={styles.searchButtonText}>Rechercher</Text>
+              <LinearGradient
+                colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.15)']}
+                style={styles.searchButton}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <Text style={styles.searchButtonText}>Rechercher</Text>
+              </LinearGradient>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => setShowSearch(false)}
@@ -140,103 +225,136 @@ export default function LocationScreen() {
           </View>
         )}
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: SPACING.lg,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingVertical: 40,
+    alignItems: 'center',
+    paddingVertical: SPACING.xxl,
+  },
+  emoji: {
+    fontSize: 80,
+    marginBottom: SPACING.lg,
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 8,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 50,
+    fontSize: TYPOGRAPHY.sizes.xxl,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text.white,
+    marginBottom: SPACING.xxl,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  buttonWrapper: {
+    marginBottom: SPACING.lg,
+    width: '100%',
   },
   button: {
-    backgroundColor: '#000000',
-    padding: 20,
-    borderRadius: 15,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'center',
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    ...SHADOWS.medium,
   },
   buttonSecondary: {
-    backgroundColor: '#F5F5F5',
-    borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  buttonIcon: {
+    fontSize: 28,
+    marginRight: SPACING.md,
+  },
+  buttonTextContainer: {
+    flex: 1,
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 5,
-  },
-  buttonTextSecondary: {
-    color: '#000000',
-    fontSize: 18,
-    fontWeight: '600',
+    color: COLORS.text.white,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.semibold,
   },
   buttonSubtext: {
-    color: '#CCCCCC',
-    fontSize: 14,
-    marginTop: 5,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: TYPOGRAPHY.sizes.sm,
+    marginTop: SPACING.xs,
+  },
+  buttonTextSecondary: {
+    color: COLORS.text.white,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.semibold,
   },
   separator: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 30,
+    marginVertical: SPACING.xl,
+    width: '100%',
   },
   separatorLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   separatorText: {
-    marginHorizontal: 15,
-    color: '#999999',
-    fontSize: 14,
-    fontWeight: '600',
+    marginHorizontal: SPACING.md,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: TYPOGRAPHY.sizes.md,
+    fontWeight: TYPOGRAPHY.weights.bold,
   },
   searchContainer: {
     width: '100%',
   },
+  searchInputWrapper: {
+    marginBottom: SPACING.lg,
+  },
+  searchInputGradient: {
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    ...SHADOWS.medium,
+  },
   searchInput: {
-    backgroundColor: '#F5F5F5',
-    padding: 18,
-    borderRadius: 15,
-    fontSize: 18,
-    marginBottom: 20,
-    borderWidth: 2,
-    borderColor: '#E0E0E0',
+    padding: SPACING.lg,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    color: COLORS.text.white,
+    fontWeight: TYPOGRAPHY.weights.medium,
+  },
+  searchButtonWrapper: {
+    marginBottom: SPACING.md,
   },
   searchButton: {
-    backgroundColor: '#000000',
-    padding: 18,
-    borderRadius: 15,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
-    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    ...SHADOWS.medium,
   },
   searchButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
+    color: COLORS.text.white,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.bold,
   },
   backButton: {
     alignItems: 'center',
-    padding: 10,
+    padding: SPACING.md,
+    marginTop: SPACING.md,
   },
   backButtonText: {
-    color: '#666666',
-    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: TYPOGRAPHY.sizes.md,
+    fontWeight: TYPOGRAPHY.weights.medium,
   },
 });
-

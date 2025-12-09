@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,11 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import { COLORS, SHADOWS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../constants/colors';
 
 const SUGGESTED_DESTINATIONS = [
   {
@@ -40,7 +43,6 @@ export default function DestinationScreen() {
   const [searchText, setSearchText] = useState('');
   const [customDestination, setCustomDestination] = useState(null);
 
-  // Ville de départ (à récupérer depuis le contexte ou les props)
   const startCity = 'Reims';
 
   const handleSelectDestination = (destination) => {
@@ -52,7 +54,6 @@ export default function DestinationScreen() {
           text: 'Confirmer',
           onPress: () => {
             navigation.navigate('Confirmation');
-            console.log('Destination choisie:', destination);
           },
         },
         {
@@ -69,14 +70,12 @@ export default function DestinationScreen() {
 
   const handleSearchSubmit = () => {
     if (searchText.trim()) {
-      // Simulation d'une recherche de destination
-      // Ici, on pourrait faire un appel API pour obtenir la distance réelle
-      const mockDistance = 9847; // Exemple: Tokyo
-      const mockTime = '~4-5 ans à ton rythme actuel';
-      
+      const mockDistance = 9847;
+      const mockTime = '~4-5 ans';
+
       setCustomDestination({
         name: searchText.trim(),
-        country: '🇯🇵', // À déterminer dynamiquement
+        country: '🌍',
         distance: mockDistance,
         estimatedTime: mockTime,
       });
@@ -93,7 +92,6 @@ export default function DestinationScreen() {
             text: 'Confirmer',
             onPress: () => {
               navigation.navigate('Confirmation');
-              console.log('Destination custom choisie:', customDestination);
             },
           },
         ]
@@ -102,72 +100,118 @@ export default function DestinationScreen() {
   };
 
   const renderSuggestions = () => (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <Text style={styles.emoji}>🗺️</Text>
-          <Text style={styles.title}>Où veux-tu aller ?</Text>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.content}>
+        <Text style={styles.emoji}>🗺️</Text>
+        <Text style={styles.title}>Où veux-tu aller ?</Text>
 
-          <View style={styles.locationInfo}>
+        <View style={styles.locationInfoWrapper}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.25)', 'rgba(255, 255, 255, 0.15)']}
+            style={styles.locationInfo}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
             <Text style={styles.locationText}>
               📍 Tu es à : {startCity}
             </Text>
-          </View>
+          </LinearGradient>
+        </View>
 
-          <Text style={styles.suggestionsTitle}>🎯 SUGGESTIONS :</Text>
+        <Text style={styles.suggestionsTitle}>🎯 SUGGESTIONS</Text>
 
-          <View style={styles.destinationsContainer}>
-            {SUGGESTED_DESTINATIONS.map((destination) => (
-              <View key={destination.id} style={styles.destinationCard}>
+        <View style={styles.destinationsContainer}>
+          {SUGGESTED_DESTINATIONS.map((destination) => (
+            <TouchableOpacity
+              key={destination.id}
+              style={styles.destinationCardWrapper}
+              onPress={() => handleSelectDestination(destination)}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={['rgba(255, 255, 255, 0.25)', 'rgba(255, 255, 255, 0.15)']}
+                style={styles.destinationCard}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
                 <View style={styles.destinationHeader}>
                   <Text style={styles.destinationName}>
                     {destination.name} {destination.country}
                   </Text>
+                  <View style={styles.distanceBadge}>
+                    <Text style={styles.distanceBadgeText}>
+                      {destination.distance} km
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.destinationInfo}>
-                  <Text style={styles.destinationDistance}>
-                    {destination.distance.toLocaleString()} km | {destination.estimatedTime}
-                  </Text>
+                <Text style={styles.destinationTime}>
+                  ⏱️ {destination.estimatedTime}
+                </Text>
+                <View style={styles.chooseButtonWrapper}>
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.2)']}
+                    style={styles.chooseButton}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Text style={styles.chooseButtonText}>Choisir →</Text>
+                  </LinearGradient>
                 </View>
-                <TouchableOpacity
-                  style={styles.chooseButton}
-                  onPress={() => handleSelectDestination(destination)}
-                >
-                  <Text style={styles.chooseButtonText}>Choisir</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-          <TouchableOpacity
+        <TouchableOpacity
+          style={styles.searchButtonWrapper}
+          onPress={handleCustomSearch}
+          activeOpacity={0.8}
+        >
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']}
             style={styles.searchButton}
-            onPress={handleCustomSearch}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
           >
             <Text style={styles.searchButtonText}>🔍 Autre destination</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 
   const renderSearch = () => (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <Text style={styles.title}>🔍 Chercher</Text>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.content}>
+        <Text style={styles.title}>🔍 Chercher</Text>
 
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tokyo 🇯🇵"
-            placeholderTextColor="#999999"
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={handleSearchSubmit}
-            autoFocus
-          />
+        <View style={styles.searchInputWrapper}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.25)', 'rgba(255, 255, 255, 0.15)']}
+            style={styles.searchInputGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Tokyo 🇯🇵"
+              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleSearchSubmit}
+              autoFocus
+            />
+          </LinearGradient>
+        </View>
 
-          {customDestination ? (
-            <View style={styles.customDestinationCard}>
+        {customDestination ? (
+          <View style={styles.customDestinationWrapper}>
+            <LinearGradient
+              colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.2)']}
+              style={styles.customDestinationCard}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
               <Text style={styles.customRoute}>
                 {startCity} → {customDestination.name} {customDestination.country}
               </Text>
@@ -178,195 +222,264 @@ export default function DestinationScreen() {
                 ⏱️ {customDestination.estimatedTime}
               </Text>
               <TouchableOpacity
-                style={styles.confirmButton}
+                style={styles.confirmButtonWrapper}
                 onPress={handleConfirmCustom}
               >
-                <Text style={styles.confirmButtonText}>Confirmer</Text>
+                <LinearGradient
+                  colors={['rgba(255, 255, 255, 0.35)', 'rgba(255, 255, 255, 0.25)']}
+                  style={styles.confirmButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Text style={styles.confirmButtonText}>Confirmer</Text>
+                </LinearGradient>
               </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
+            </LinearGradient>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.searchSubmitWrapper}
+            onPress={handleSearchSubmit}
+          >
+            <LinearGradient
+              colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.2)']}
               style={styles.searchSubmitButton}
-              onPress={handleSearchSubmit}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
             >
               <Text style={styles.searchSubmitButtonText}>Rechercher</Text>
-            </TouchableOpacity>
-          )}
-
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              setShowSearch(false);
-              setSearchText('');
-              setCustomDestination(null);
-            }}
-          >
-            <Text style={styles.backButtonText}>← Retour</Text>
+            </LinearGradient>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
+        )}
+
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            setShowSearch(false);
+            setSearchText('');
+            setCustomDestination(null);
+          }}
+        >
+          <Text style={styles.backButtonText}>← Retour</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 
-  return showSearch ? renderSearch() : renderSuggestions();
+  return (
+    <LinearGradient
+      colors={COLORS.gradients.secondary}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      {showSearch ? renderSearch() : renderSuggestions()}
+    </LinearGradient>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 20,
   },
   scrollContent: {
     flexGrow: 1,
+    padding: SPACING.lg,
   },
   content: {
     flex: 1,
-    paddingVertical: 20,
+    paddingVertical: SPACING.xl,
   },
   emoji: {
-    fontSize: 50,
-    marginBottom: 15,
+    fontSize: 60,
+    marginBottom: SPACING.md,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 8,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 30,
+    fontSize: TYPOGRAPHY.sizes.xxl,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text.white,
+    marginBottom: SPACING.xl,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  locationInfoWrapper: {
+    marginBottom: SPACING.xl,
   },
   locationInfo: {
-    backgroundColor: '#F5F5F5',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 30,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   locationText: {
-    fontSize: 16,
-    color: '#000000',
+    fontSize: TYPOGRAPHY.sizes.md,
+    color: COLORS.text.white,
     textAlign: 'center',
+    fontWeight: TYPOGRAPHY.weights.medium,
   },
   suggestionsTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000000',
-    marginBottom: 20,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text.white,
+    marginBottom: SPACING.lg,
   },
   destinationsContainer: {
-    marginBottom: 30,
+    marginBottom: SPACING.xl,
+  },
+  destinationCardWrapper: {
+    marginBottom: SPACING.md,
   },
   destinationCard: {
-    backgroundColor: '#F5F5F5',
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 15,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    ...SHADOWS.medium,
   },
   destinationHeader: {
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.md,
   },
   destinationName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000000',
+    fontSize: TYPOGRAPHY.sizes.xl,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text.white,
+    flex: 1,
   },
-  destinationInfo: {
-    marginBottom: 15,
+  distanceBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    borderRadius: BORDER_RADIUS.full,
   },
-  destinationDistance: {
-    fontSize: 16,
-    color: '#666666',
+  distanceBadgeText: {
+    fontSize: TYPOGRAPHY.sizes.sm,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text.white,
+  },
+  destinationTime: {
+    fontSize: TYPOGRAPHY.sizes.md,
+    color: 'rgba(255, 255, 255, 0.85)',
+    marginBottom: SPACING.md,
+  },
+  chooseButtonWrapper: {
+    marginTop: SPACING.sm,
   },
   chooseButton: {
-    backgroundColor: '#000000',
-    padding: 12,
-    borderRadius: 10,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   chooseButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    color: COLORS.text.white,
+    fontSize: TYPOGRAPHY.sizes.md,
+    fontWeight: TYPOGRAPHY.weights.bold,
+  },
+  searchButtonWrapper: {
+    marginTop: SPACING.md,
   },
   searchButton: {
-    backgroundColor: '#F5F5F5',
-    padding: 18,
-    borderRadius: 15,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   searchButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000000',
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.semibold,
+    color: COLORS.text.white,
+  },
+  searchInputWrapper: {
+    marginBottom: SPACING.xl,
+  },
+  searchInputGradient: {
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   searchInput: {
-    backgroundColor: '#F5F5F5',
-    padding: 18,
-    borderRadius: 15,
-    fontSize: 18,
-    marginBottom: 30,
-    borderWidth: 2,
-    borderColor: '#E0E0E0',
+    padding: SPACING.lg,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    color: COLORS.text.white,
+    fontWeight: TYPOGRAPHY.weights.medium,
+  },
+  customDestinationWrapper: {
+    marginBottom: SPACING.lg,
   },
   customDestinationCard: {
-    backgroundColor: '#F5F5F5',
-    padding: 25,
-    borderRadius: 15,
-    marginBottom: 20,
+    padding: SPACING.xl,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    ...SHADOWS.medium,
   },
   customRoute: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000000',
-    marginBottom: 15,
+    fontSize: TYPOGRAPHY.sizes.xl,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text.white,
+    marginBottom: SPACING.md,
     textAlign: 'center',
   },
   customDistance: {
-    fontSize: 18,
-    color: '#666666',
-    marginBottom: 10,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginBottom: SPACING.sm,
     textAlign: 'center',
   },
   customTime: {
-    fontSize: 16,
-    color: '#666666',
-    marginBottom: 20,
+    fontSize: TYPOGRAPHY.sizes.md,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: SPACING.lg,
     textAlign: 'center',
   },
+  confirmButtonWrapper: {
+    marginTop: SPACING.sm,
+  },
   confirmButton: {
-    backgroundColor: '#000000',
-    padding: 18,
-    borderRadius: 15,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   confirmButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
+    color: COLORS.text.white,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.bold,
+  },
+  searchSubmitWrapper: {
+    marginBottom: SPACING.lg,
   },
   searchSubmitButton: {
-    backgroundColor: '#000000',
-    padding: 18,
-    borderRadius: 15,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
-    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   searchSubmitButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
+    color: COLORS.text.white,
+    fontSize: TYPOGRAPHY.sizes.lg,
+    fontWeight: TYPOGRAPHY.weights.bold,
   },
   backButton: {
     alignItems: 'center',
-    padding: 10,
+    padding: SPACING.md,
   },
   backButtonText: {
-    fontSize: 16,
-    color: '#666666',
+    fontSize: TYPOGRAPHY.sizes.md,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: TYPOGRAPHY.weights.medium,
   },
 });
-
