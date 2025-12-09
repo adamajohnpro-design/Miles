@@ -51,8 +51,7 @@ export default function DestinationScreen() {
         {
           text: 'Confirmer',
           onPress: () => {
-            // Navigation vers l'écran principal
-            // navigation.navigate('Home');
+            navigation.navigate('Confirmation');
             console.log('Destination choisie:', destination);
           },
         },
@@ -93,8 +92,7 @@ export default function DestinationScreen() {
           {
             text: 'Confirmer',
             onPress: () => {
-              // Navigation vers l'écran principal
-              // navigation.navigate('Home');
+              navigation.navigate('Confirmation');
               console.log('Destination custom choisie:', customDestination);
             },
           },
