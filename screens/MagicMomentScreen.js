@@ -15,6 +15,15 @@ export default function MagicMomentScreen() {
   const [showResult, setShowResult] = useState(false);
   const fadeAnim = new Animated.Value(0);
   const scaleAnim = new Animated.Value(0.8);
+  
+  // Animations pour le tracé du trajet
+  const line1Anim = new Animated.Value(0);
+  const line2Anim = new Animated.Value(0);
+  const line3Anim = new Animated.Value(0);
+  const dot1Scale = new Animated.Value(0);
+  const dot2Scale = new Animated.Value(0);
+  const dot3Scale = new Animated.Value(0);
+  const dot4Scale = new Animated.Value(0);
 
   // Données simulées (à remplacer par les vraies données)
   const totalKm = 847;
@@ -42,7 +51,61 @@ export default function MagicMomentScreen() {
           tension: 40,
           useNativeDriver: true,
         }),
-      ]).start();
+      ]).start(() => {
+        // Animation séquentielle du tracé du trajet
+        // Point 1 (Reims)
+        Animated.spring(dot1Scale, {
+          toValue: 1,
+          friction: 6,
+          tension: 40,
+          useNativeDriver: true,
+        }).start();
+        
+        // Ligne 1 (Reims → Paris)
+        Animated.timing(line1Anim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }).start(() => {
+          // Point 2 (Paris)
+          Animated.spring(dot2Scale, {
+            toValue: 1,
+            friction: 6,
+            tension: 40,
+            useNativeDriver: true,
+          }).start();
+          
+          // Ligne 2 (Paris → Lyon)
+          Animated.timing(line2Anim, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: true,
+          }).start(() => {
+            // Point 3 (Lyon)
+            Animated.spring(dot3Scale, {
+              toValue: 1,
+              friction: 6,
+              tension: 40,
+              useNativeDriver: true,
+            }).start();
+            
+            // Ligne 3 (Lyon → Barcelone)
+            Animated.timing(line3Anim, {
+              toValue: 1,
+              duration: 800,
+              useNativeDriver: true,
+            }).start(() => {
+              // Point 4 (Barcelone)
+              Animated.spring(dot4Scale, {
+                toValue: 1,
+                friction: 6,
+                tension: 40,
+                useNativeDriver: true,
+              }).start();
+            });
+          });
+        });
+      });
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -105,13 +168,96 @@ export default function MagicMomentScreen() {
         <View style={styles.mapContainer}>
           <Text style={styles.mapText}>{route}</Text>
           <View style={styles.mapLine}>
-            <View style={styles.mapDot} />
-            <View style={styles.mapLineSegment} />
-            <View style={styles.mapDot} />
-            <View style={styles.mapLineSegment} />
-            <View style={styles.mapDot} />
-            <View style={styles.mapLineSegment} />
-            <View style={styles.mapDot} />
+            {/* Reims */}
+            <Animated.View
+              style={[
+                styles.mapDot,
+                {
+                  transform: [{ scale: dot1Scale }],
+                },
+              ]}
+            />
+            
+            {/* Ligne Reims → Paris */}
+            <Animated.View
+              style={[
+                styles.mapLineSegment,
+                {
+                  transform: [
+                    {
+                      scaleX: line1Anim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
+            
+            {/* Paris */}
+            <Animated.View
+              style={[
+                styles.mapDot,
+                {
+                  transform: [{ scale: dot2Scale }],
+                },
+              ]}
+            />
+            
+            {/* Ligne Paris → Lyon */}
+            <Animated.View
+              style={[
+                styles.mapLineSegment,
+                {
+                  transform: [
+                    {
+                      scaleX: line2Anim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
+            
+            {/* Lyon */}
+            <Animated.View
+              style={[
+                styles.mapDot,
+                {
+                  transform: [{ scale: dot3Scale }],
+                },
+              ]}
+            />
+            
+            {/* Ligne Lyon → Barcelone */}
+            <Animated.View
+              style={[
+                styles.mapLineSegment,
+                {
+                  transform: [
+                    {
+                      scaleX: line3Anim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
+            
+            {/* Barcelone */}
+            <Animated.View
+              style={[
+                styles.mapDot,
+                {
+                  transform: [{ scale: dot4Scale }],
+                },
+              ]}
+            />
           </View>
         </View>
 
@@ -207,18 +353,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
+    height: 40,
   },
   mapDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
     backgroundColor: '#000000',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   mapLineSegment: {
     flex: 1,
-    height: 2,
+    height: 3,
     backgroundColor: '#000000',
     marginHorizontal: 5,
+    transformOrigin: 'left',
   },
   encouragementText: {
     fontSize: 20,
