@@ -9,28 +9,59 @@ Tu cours dans ta ville → Tes km s'ajoutent à un trajet virtuel vers une desti
 ## 🚀 Installation
 
 ```bash
+# Installer les dépendances du serveur
 npm install
+
+# Installer les dépendances du client React
+cd client
+npm install
+cd ..
 ```
 
 ## 📱 Démarrage
 
+### Mode développement
+
 ```bash
+# Terminal 1 - Démarrer le serveur Express
+npm start
+
+# Terminal 2 - Démarrer le client React
+cd client
 npm start
 ```
 
-Puis appuyez sur `i` pour iOS ou `a` pour Android.
+L'application sera accessible sur `http://localhost:3000` (serveur) et `http://localhost:3001` (client React en dev).
+
+### Mode production
+
+```bash
+# Build du client React
+npm run build
+
+# Démarrer le serveur (servira aussi le client buildé)
+npm start
+```
 
 ## 📋 Structure
 
-- `screens/` - Écrans de l'application
-  - `WelcomeScreen.js` - Écran d'accueil/Splash
-  - `ConnectAppsScreen.js` - Connexion aux apps de fitness
-  - `LocationScreen.js` - Sélection de la localisation de départ
-- `App.js` - Point d'entrée de l'application
+- `server.js` - Serveur Express Node.js
+- `client/` - Application React
+  - `src/screens/` - Écrans de l'application
+    - `WelcomeScreen.js` - Écran d'accueil/Splash
+    - `ConnectAppsScreen.js` - Connexion aux apps de fitness
+    - `LocationScreen.js` - Sélection de la localisation de départ
+  - `src/App.js` - Point d'entrée de l'application React
 
 ## 🔄 Flux d'Onboarding
 
-1. **Welcome/Splash** - Écran d'accueil avec logo MILES
+1. **Welcome/Splash** - Écran d'accueil avec logo MILES (animation fade-in 2s)
 2. **Connect Apps** - Connexion optionnelle à Strava, Apple Health, Google Fit
-3. **Location** - Sélection de la localisation de départ (GPS ou recherche)
+3. **Location** - Sélection de la localisation de départ (GPS ou recherche ville)
+
+## 🛠️ Technologies
+
+- **Backend**: Node.js + Express
+- **Frontend**: React
+- **Port**: 3000 (serveur), 3001 (client dev)
 

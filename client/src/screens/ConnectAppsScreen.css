@@ -1,0 +1,123 @@
+.connect-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.connect-content {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.connect-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.connect-subtitle {
+  font-size: 16px;
+  color: #666666;
+  text-align: center;
+  margin-bottom: 50px;
+  line-height: 24px;
+}
+
+.apps-container {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.app-button {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #F5F5F5;
+  border: 2px solid #E0E0E0;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.app-button:hover:not(:disabled) {
+  background-color: #EEEEEE;
+  border-color: #CCCCCC;
+}
+
+.app-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.app-button.connected {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+  color: #ffffff;
+}
+
+.app-emoji {
+  font-size: 32px;
+  margin-right: 15px;
+}
+
+.app-name {
+  font-size: 18px;
+  font-weight: 600;
+  flex: 1;
+  text-align: left;
+}
+
+.app-button.connected .app-name {
+  color: #ffffff;
+}
+
+.loader {
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.skip-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.skip-text {
+  font-size: 18px;
+  color: #666666;
+  margin-bottom: 5px;
+}
+
+.skip-subtext {
+  font-size: 14px;
+  color: #999999;
+}
+
+.skip-button:hover .skip-text {
+  color: #333333;
+}
+
+.skip-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

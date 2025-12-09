@@ -1,0 +1,157 @@
+.location-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.location-content {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.location-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.location-button {
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.location-button:hover:not(:disabled) {
+  background-color: #333333;
+}
+
+.location-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.location-button-secondary {
+  background-color: #F5F5F5;
+  border: 2px solid #E0E0E0;
+  color: #000000;
+}
+
+.location-button-secondary:hover {
+  background-color: #EEEEEE;
+  border-color: #CCCCCC;
+}
+
+.button-text {
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.button-text-secondary {
+  color: #000000;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.button-subtext {
+  color: #CCCCCC;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.separator {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 30px 0;
+}
+
+.separator-line {
+  flex: 1;
+  height: 1px;
+  background-color: #E0E0E0;
+}
+
+.separator-text {
+  margin: 0 15px;
+  color: #999999;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.search-container {
+  width: 100%;
+}
+
+.search-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.search-input {
+  width: 100%;
+  background-color: #F5F5F5;
+  border: 2px solid #E0E0E0;
+  padding: 18px;
+  border-radius: 15px;
+  font-size: 18px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #000000;
+}
+
+.search-button {
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 18px;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #333333;
+}
+
+.back-button {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px;
+  margin-top: 15px;
+  cursor: pointer;
+  color: #666666;
+  font-size: 16px;
+}
+
+.back-button:hover {
+  color: #333333;
+}
+
