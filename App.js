@@ -5,6 +5,7 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import ConnectAppsScreen from './screens/ConnectAppsScreen';
 import LocationScreen from './screens/LocationScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import DestinationScreen from './screens/DestinationScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ export default function App() {
         <Stack.Screen name="ConnectApps" component={ConnectAppsScreen} />
         <Stack.Screen name="Location" component={LocationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Destination" component={DestinationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

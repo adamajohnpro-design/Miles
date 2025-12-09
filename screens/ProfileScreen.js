@@ -11,9 +11,10 @@ import Slider from '@react-native-community/slider';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const [step, setStep] = useState(1); // 1 = âge, 2 = objectif
+  const [step, setStep] = useState(1); // 1 = âge, 2 = objectif, 3 = niveau
   const [age, setAge] = useState(30);
   const [selectedGoal, setSelectedGoal] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
 
   const goals = [
     { id: 'weight', emoji: '⚖️', label: 'Perdre du poids' },
@@ -26,10 +27,12 @@ export default function ProfileScreen() {
   const handleNext = () => {
     if (step === 1) {
       setStep(2);
+    } else if (step === 2) {
+      setStep(3);
     } else {
-      // Navigation vers l'écran suivant (à définir)
-      // navigation.navigate('Home');
-      console.log('Profil complété:', { age, goal: selectedGoal });
+      // Navigation vers l'écran de destination
+      navigation.navigate('Destination');
+      console.log('Profil complété:', { age, goal: selectedGoal, level: selectedLevel });
     }
   };
 
@@ -116,7 +119,113 @@ export default function ProfileScreen() {
     </View>
   );
 
-  return step === 1 ? renderAgeStep() : renderGoalStep();
+  const renderLevelStep = () => (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.content}>
+          <Text style={styles.emoji}>📊</Text>
+          <Text style={styles.title}>Ton niveau ?</Text>
+
+          <View style={styles.goalsContainer}>
+            <TouchableOpacity
+              style={[
+                styles.goalButton,
+                selectedLevel === 'beginner' && styles.goalButtonSelected,
+              ]}
+              onPress={() => setSelectedLevel('beginner')}
+            >
+              <Text style={styles.goalEmoji}>🟢</Text>
+              <View style={styles.levelInfo}>
+                <Text
+                  style={[
+                    styles.goalText,
+                    selectedLevel === 'beginner' && styles.goalTextSelected,
+                  ]}
+                >
+                  Débutant
+                </Text>
+                <Text
+                  style={[
+                    styles.levelSubtext,
+                    selectedLevel === 'beginner' && styles.levelSubtextSelected,
+                  ]}
+                >
+                  (0-10 km/semaine)
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.goalButton,
+                selectedLevel === 'intermediate' && styles.goalButtonSelected,
+              ]}
+              onPress={() => setSelectedLevel('intermediate')}
+            >
+              <Text style={styles.goalEmoji}>🟡</Text>
+              <View style={styles.levelInfo}>
+                <Text
+                  style={[
+                    styles.goalText,
+                    selectedLevel === 'intermediate' && styles.goalTextSelected,
+                  ]}
+                >
+                  Intermédiaire
+                </Text>
+                <Text
+                  style={[
+                    styles.levelSubtext,
+                    selectedLevel === 'intermediate' && styles.levelSubtextSelected,
+                  ]}
+                >
+                  (10-30 km/semaine)
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.goalButton,
+                selectedLevel === 'advanced' && styles.goalButtonSelected,
+              ]}
+              onPress={() => setSelectedLevel('advanced')}
+            >
+              <Text style={styles.goalEmoji}>🔴</Text>
+              <View style={styles.levelInfo}>
+                <Text
+                  style={[
+                    styles.goalText,
+                    selectedLevel === 'advanced' && styles.goalTextSelected,
+                  ]}
+                >
+                  Avancé
+                </Text>
+                <Text
+                  style={[
+                    styles.levelSubtext,
+                    selectedLevel === 'advanced' && styles.levelSubtextSelected,
+                  ]}
+                >
+                  (30+ km/semaine)
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleNext}
+          >
+            <Text style={styles.buttonText}>Suivant</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
+  );
+
+  if (step === 1) return renderAgeStep();
+  if (step === 2) return renderGoalStep();
+  return renderLevelStep();
 }
 
 const styles = StyleSheet.create({
@@ -209,6 +318,17 @@ const styles = StyleSheet.create({
   },
   goalTextSelected: {
     color: '#FFFFFF',
+  },
+  levelInfo: {
+    flex: 1,
+  },
+  levelSubtext: {
+    fontSize: 14,
+    color: '#666666',
+    marginTop: 4,
+  },
+  levelSubtextSelected: {
+    color: '#CCCCCC',
   },
   button: {
     backgroundColor: '#000000',
