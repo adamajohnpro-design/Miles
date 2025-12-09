@@ -20,6 +20,7 @@
     "heroku-postbuild": "npm run install-client && npm run build"
   },
   "dependencies": {
+    "@react-native-community/slider": "5.0.1",
     "@react-native/virtualized-lists": "^0.82.1",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",

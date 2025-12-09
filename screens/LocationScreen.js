@@ -47,8 +47,7 @@ export default function LocationScreen() {
             {
               text: 'OK',
               onPress: () => {
-                // Navigation vers l'écran principal (à créer)
-                // navigation.navigate('Home');
+                navigation.navigate('Profile');
               },
             },
           ]
@@ -74,8 +73,7 @@ export default function LocationScreen() {
           {
             text: 'OK',
             onPress: () => {
-              // Navigation vers l'écran principal
-              // navigation.navigate('Home');
+              navigation.navigate('Profile');
             },
           },
         ]
