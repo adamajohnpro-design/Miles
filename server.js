@@ -34,6 +34,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`📍 Network: http://192.168.1.89:${PORT}`);
   console.log(`\n📱 Pour tester sur mobile:`);
   console.log(`   1. Connectez votre mobile au même WiFi`);
-  console.log(`   2. Ouvrez: http://192.168.1.89:${PORT}`);
+  console.log(`   2. Ouvrez le client React sur: http://192.168.1.89:3001`);
 });
 
