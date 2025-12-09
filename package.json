@@ -20,6 +20,7 @@
     "heroku-postbuild": "npm run install-client && npm run build"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "8.4.4",
     "@react-native-community/slider": "5.0.1",
     "@react-native/virtualized-lists": "^0.82.1",
     "@react-navigation/native": "^6.1.9",

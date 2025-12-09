@@ -18,9 +18,7 @@ export default function ConfirmationScreen() {
   const weeksRemaining = 12;
 
   const handleStart = () => {
-    // Navigation vers l'écran principal (à créer)
-    // navigation.navigate('Home');
-    console.log('Démarrage du voyage virtuel !');
+    navigation.navigate('Home');
   };
 
   return (
