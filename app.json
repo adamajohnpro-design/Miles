@@ -34,8 +34,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Miles a besoin de votre localisation pour déterminer votre point de départ."
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }
-
