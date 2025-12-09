@@ -15,6 +15,10 @@ export const COLORS = {
     secondary: ['#F093FB', '#F5576C'],
     success: ['#10B981', '#059669'],
     warning: ['#F59E0B', '#D97706'],
+    energy: ['#FF6B6B', '#FFE66D'],
+    sunset: ['#FF6B6B', '#FF8E53'],
+    nature: ['#56AB2F', '#A8E063'],
+    ocean: ['#4A90E2', '#50E3C2'],
   },
 };
 
