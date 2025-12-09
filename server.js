@@ -28,8 +28,12 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Miles server running on port ${PORT}`);
-  console.log(`📍 http://localhost:${PORT}`);
+  console.log(`📍 Local: http://localhost:${PORT}`);
+  console.log(`📍 Network: http://192.168.1.89:${PORT}`);
+  console.log(`\n📱 Pour tester sur mobile:`);
+  console.log(`   1. Connectez votre mobile au même WiFi`);
+  console.log(`   2. Ouvrez: http://192.168.1.89:${PORT}`);
 });
 
