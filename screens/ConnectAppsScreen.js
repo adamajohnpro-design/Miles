@@ -21,9 +21,8 @@ export default function ConnectAppsScreen() {
     // Simulation de la connexion OAuth Strava (10 secondes)
     setTimeout(() => {
       setLoading(false);
-      // Ici, on pourrait afficher un message de succès avec les km importés
-      // "Tu as couru 847 km en 2024 !"
-      navigation.navigate('Location');
+      // Navigation vers Magic Moment si connexion réussie
+      navigation.navigate('MagicMoment');
     }, 10000);
   };
 
@@ -34,7 +33,7 @@ export default function ConnectAppsScreen() {
     // Simulation de la connexion Apple Health
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('Location');
+      navigation.navigate('MagicMoment');
     }, 10000);
   };
 
@@ -45,7 +44,7 @@ export default function ConnectAppsScreen() {
     // Simulation de la connexion Google Fit
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('Location');
+      navigation.navigate('MagicMoment');
     }, 10000);
   };
 

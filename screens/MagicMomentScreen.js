@@ -49,7 +49,9 @@ export default function MagicMomentScreen() {
   }, []);
 
   const handleContinue = () => {
-    navigation.navigate('Confirmation');
+    // Si l'utilisateur a déjà choisi une destination, aller à Confirmation
+    // Sinon, aller à Destination
+    navigation.navigate('Destination');
   };
 
   if (isLoading) {
