@@ -20,15 +20,31 @@ cd ..
 
 ## 📱 Démarrage
 
-### Mode développement
+### 🚀 Expo Go (Mobile - Recommandé)
+
+```bash
+# Démarrer Expo
+npm start
+
+# Un QR code apparaîtra dans le terminal
+# Scannez-le avec l'application Expo Go sur votre téléphone
+```
+
+**Options Expo :**
+- `npm start` - Démarre Expo avec QR code (réseau local)
+- `npm run qr` - Démarre Expo avec tunnel (accessible depuis n'importe où)
+- `npm run ios` - Ouvrir sur simulateur iOS
+- `npm run android` - Ouvrir sur émulateur Android
+- `npm run start:web` - Ouvrir dans le navigateur web
+
+### 🌐 Mode Web (React)
 
 ```bash
 # Terminal 1 - Démarrer le serveur Express
-npm start
+npm run server
 
 # Terminal 2 - Démarrer le client React
-cd client
-npm start
+npm run client
 ```
 
 L'application sera accessible sur `http://localhost:3000` (serveur) et `http://localhost:3001` (client React en dev).
