@@ -17,12 +17,14 @@ export default function RunAddedScreen() {
 
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const confettiAnims = useRef([...Array(10)].map(() => ({
-    x: new Animated.Value(0),
-    y: new Animated.Value(0),
-    rotate: new Animated.Value(0),
-    opacity: new Animated.Value(1),
-  }))).current;
+  const confettiAnims = useRef(
+    Array.from({ length: 10 }, () => ({
+      x: new Animated.Value(0),
+      y: new Animated.Value(0),
+      rotate: new Animated.Value(0),
+      opacity: new Animated.Value(1),
+    }))
+  ).current;
 
   useEffect(() => {
     // Animation du checkmark
