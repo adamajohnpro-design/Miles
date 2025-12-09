@@ -13,8 +13,13 @@ export default function MagicMomentScreen() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0.8);
+  
+  // Animations pour la transition entre loading et result
+  const loadingFadeAnim = new Animated.Value(1);
+  const loadingSlideAnim = new Animated.Value(0);
+  const resultFadeAnim = new Animated.Value(0);
+  const resultSlideAnim = new Animated.Value(50);
+  const resultScaleAnim = new Animated.Value(0.9);
   
   // Animations pour le tracé du trajet
   const line1Anim = new Animated.Value(0);
@@ -24,6 +29,10 @@ export default function MagicMomentScreen() {
   const dot2Scale = new Animated.Value(0);
   const dot3Scale = new Animated.Value(0);
   const dot4Scale = new Animated.Value(0);
+  
+  // Animation pour le "WOW" moment
+  const wowScaleAnim = new Animated.Value(0);
+  const wowRotateAnim = new Animated.Value(0);
 
   // Données simulées (à remplacer par les vraies données)
   const totalKm = 847;
@@ -33,80 +42,127 @@ export default function MagicMomentScreen() {
   const route = 'Reims → Paris → Lyon → Barcelone';
 
   useEffect(() => {
-    // Animation de chargement pendant 3 secondes
+    // Animation de chargement pendant 3-4 secondes
     const timer = setTimeout(() => {
-      setIsLoading(false);
-      setShowResult(true);
-      
-      // Animation d'apparition du résultat
+      // Transition animée : disparition du loading + apparition du résultat
       Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 1000,
+        // Disparition du loading (fade out + slide up)
+        Animated.timing(loadingFadeAnim, {
+          toValue: 0,
+          duration: 500,
           useNativeDriver: true,
         }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
+        Animated.timing(loadingSlideAnim, {
+          toValue: -50,
+          duration: 500,
           useNativeDriver: true,
         }),
-      ]).start(() => {
-        // Animation séquentielle du tracé du trajet
-        // Point 1 (Reims)
-        Animated.spring(dot1Scale, {
-          toValue: 1,
-          friction: 6,
-          tension: 40,
-          useNativeDriver: true,
-        }).start();
-        
-        // Ligne 1 (Reims → Paris)
-        Animated.timing(line1Anim, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }).start(() => {
-          // Point 2 (Paris)
-          Animated.spring(dot2Scale, {
+        // Apparition du résultat (fade in + slide up + scale)
+        Animated.parallel([
+          Animated.timing(resultFadeAnim, {
             toValue: 1,
-            friction: 6,
+            duration: 600,
+            delay: 200,
+            useNativeDriver: true,
+          }),
+          Animated.spring(resultSlideAnim, {
+            toValue: 0,
+            friction: 8,
             tension: 40,
+            delay: 200,
             useNativeDriver: true,
-          }).start();
-          
-          // Ligne 2 (Paris → Lyon)
-          Animated.timing(line2Anim, {
+          }),
+          Animated.spring(resultScaleAnim, {
             toValue: 1,
-            duration: 800,
+            friction: 8,
+            tension: 40,
+            delay: 200,
             useNativeDriver: true,
-          }).start(() => {
-            // Point 3 (Lyon)
-            Animated.spring(dot3Scale, {
+          }),
+        ]),
+      ]).start(() => {
+        setIsLoading(false);
+        setShowResult(true);
+        
+        // Animation du "WOW" moment (scale + rotation)
+        Animated.parallel([
+          Animated.spring(wowScaleAnim, {
+            toValue: 1,
+            friction: 4,
+            tension: 50,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(wowRotateAnim, {
+              toValue: 1,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(wowRotateAnim, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]).start(() => {
+          // Animation séquentielle du tracé du trajet (après le WOW)
+          setTimeout(() => {
+            // Point 1 (Reims)
+            Animated.spring(dot1Scale, {
               toValue: 1,
               friction: 6,
               tension: 40,
               useNativeDriver: true,
             }).start();
             
-            // Ligne 3 (Lyon → Barcelone)
-            Animated.timing(line3Anim, {
+            // Ligne 1 (Reims → Paris)
+            Animated.timing(line1Anim, {
               toValue: 1,
               duration: 800,
               useNativeDriver: true,
             }).start(() => {
-              // Point 4 (Barcelone)
-              Animated.spring(dot4Scale, {
+              // Point 2 (Paris)
+              Animated.spring(dot2Scale, {
                 toValue: 1,
                 friction: 6,
                 tension: 40,
                 useNativeDriver: true,
               }).start();
+              
+              // Ligne 2 (Paris → Lyon)
+              Animated.timing(line2Anim, {
+                toValue: 1,
+                duration: 800,
+                useNativeDriver: true,
+              }).start(() => {
+                // Point 3 (Lyon)
+                Animated.spring(dot3Scale, {
+                  toValue: 1,
+                  friction: 6,
+                  tension: 40,
+                  useNativeDriver: true,
+                }).start();
+                
+                // Ligne 3 (Lyon → Barcelone)
+                Animated.timing(line3Anim, {
+                  toValue: 1,
+                  duration: 800,
+                  useNativeDriver: true,
+                }).start(() => {
+                  // Point 4 (Barcelone)
+                  Animated.spring(dot4Scale, {
+                    toValue: 1,
+                    friction: 6,
+                    tension: 40,
+                    useNativeDriver: true,
+                  }).start();
+                });
+              });
             });
-          });
+          }, 500);
         });
       });
-    }, 3000);
+    }, 3500); // 3.5 secondes de chargement
 
     return () => clearTimeout(timer);
   }, []);
@@ -117,46 +173,94 @@ export default function MagicMomentScreen() {
     navigation.navigate('Destination');
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.loadingContent}>
-          <Text style={styles.loadingTitle}>✨ ANALYSE EN COURS...</Text>
-          
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="#000000" />
-          </View>
-
-          <View style={styles.statsContainer}>
-            <Text style={styles.statsText}>
-              📊 {totalKm.toLocaleString()} km détectés
-            </Text>
-            <Text style={styles.statsText}>
-              🗓️ Depuis {startDate}
-            </Text>
-          </View>
-
-          <Text style={styles.hintText}>
-            🗺️ Si tu avais couru{'\n'}en ligne droite...
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-          transform: [{ scale: scaleAnim }],
-        },
-      ]}
-    >
-      <View style={styles.resultContent}>
-        <Text style={styles.wowEmoji}>🎉</Text>
-        <Text style={styles.wowTitle}>WOW !</Text>
+    <View style={styles.container}>
+      {/* Écran de chargement */}
+      {isLoading && (
+        <Animated.View
+          style={[
+            styles.loadingWrapper,
+            {
+              opacity: loadingFadeAnim,
+              transform: [{ translateY: loadingSlideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.loadingContent}>
+            <Text style={styles.loadingTitle}>✨ ANALYSE EN COURS...</Text>
+            
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#000000" />
+            </View>
+
+            <View style={styles.statsContainer}>
+              <Text style={styles.statsText}>
+                📊 {totalKm.toLocaleString()} km détectés
+              </Text>
+              <Text style={styles.statsText}>
+                🗓️ Depuis {startDate}
+              </Text>
+            </View>
+
+            <Text style={styles.hintText}>
+              🗺️ Si tu avais couru{'\n'}en ligne droite...
+            </Text>
+          </View>
+        </Animated.View>
+      )}
+
+      {/* Écran de résultat avec transition animée */}
+      {showResult && (
+        <Animated.View
+          style={[
+            styles.resultWrapper,
+            {
+              opacity: resultFadeAnim,
+              transform: [
+                { translateY: resultSlideAnim },
+                { scale: resultScaleAnim },
+              ],
+            },
+          ]}
+        >
+          <View style={styles.resultContent}>
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    scale: wowScaleAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, 1],
+                    }),
+                  },
+                  {
+                    rotate: wowRotateAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['-10deg', '10deg'],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <Text style={styles.wowEmoji}>🎉</Text>
+            </Animated.View>
+            <Animated.Text
+              style={[
+                styles.wowTitle,
+                {
+                  transform: [
+                    {
+                      scale: wowScaleAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.5, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
+              WOW !
+            </Animated.Text>
 
         <View style={styles.messageContainer}>
           <Text style={styles.messageText}>
@@ -265,11 +369,13 @@ export default function MagicMomentScreen() {
           💪 Continue comme ça !
         </Text>
 
-        <TouchableOpacity style={styles.button} onPress={handleContinue}>
-          <Text style={styles.buttonText}>Voir mon profil</Text>
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
+            <TouchableOpacity style={styles.button} onPress={handleContinue}>
+              <Text style={styles.buttonText}>Voir mon profil</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      )}
+    </View>
   );
 }
 
@@ -277,6 +383,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    padding: 20,
+  },
+  loadingWrapper: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 20,
+  },
+  resultWrapper: {
+    flex: 1,
     padding: 20,
   },
   loadingContent: {
