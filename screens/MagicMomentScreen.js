@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -14,25 +14,25 @@ export default function MagicMomentScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
   
-  // Animations pour la transition entre loading et result
-  const loadingFadeAnim = new Animated.Value(1);
-  const loadingSlideAnim = new Animated.Value(0);
-  const resultFadeAnim = new Animated.Value(0);
-  const resultSlideAnim = new Animated.Value(50);
-  const resultScaleAnim = new Animated.Value(0.9);
+  // Animations pour la transition entre loading et result (utiliser useRef pour persister)
+  const loadingFadeAnim = useRef(new Animated.Value(1)).current;
+  const loadingSlideAnim = useRef(new Animated.Value(0)).current;
+  const resultFadeAnim = useRef(new Animated.Value(0)).current;
+  const resultSlideAnim = useRef(new Animated.Value(50)).current;
+  const resultScaleAnim = useRef(new Animated.Value(0.9)).current;
   
   // Animations pour le tracé du trajet
-  const line1Anim = new Animated.Value(0);
-  const line2Anim = new Animated.Value(0);
-  const line3Anim = new Animated.Value(0);
-  const dot1Scale = new Animated.Value(0);
-  const dot2Scale = new Animated.Value(0);
-  const dot3Scale = new Animated.Value(0);
-  const dot4Scale = new Animated.Value(0);
+  const line1Anim = useRef(new Animated.Value(0)).current;
+  const line2Anim = useRef(new Animated.Value(0)).current;
+  const line3Anim = useRef(new Animated.Value(0)).current;
+  const dot1Scale = useRef(new Animated.Value(0)).current;
+  const dot2Scale = useRef(new Animated.Value(0)).current;
+  const dot3Scale = useRef(new Animated.Value(0)).current;
+  const dot4Scale = useRef(new Animated.Value(0)).current;
   
   // Animation pour le "WOW" moment
-  const wowScaleAnim = new Animated.Value(0);
-  const wowRotateAnim = new Animated.Value(0);
+  const wowScaleAnim = useRef(new Animated.Value(0)).current;
+  const wowRotateAnim = useRef(new Animated.Value(0)).current;
 
   // Données simulées (à remplacer par les vraies données)
   const totalKm = 847;
